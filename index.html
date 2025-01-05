@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="" />
+    <link rel="stylesheet" href="./style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JS Countdown</title>
+</head>
+
+<body>
+    <h1 id="heading" class="heading">JS Countdown</h1>
+    <p id="sub-heading"></p>
+    <div class="card">
+        <div id="counter">
+            <div class="loader"></div>
+        </div>
+    </div>
+</body>
+<script>
+    const MS_IN_MONTH = 2628000000
+    const MS_IN_WEEK = 604800000
+    const MS_IN_DAY = 86400000
+    const MS_IN_HOUR = 3600000
+    const MS_IN_MINUTE = 60000
+    const MS_IN_SECOND = 1000
+
+    async function getCurrentTime() {
+        const res = await fetch("https://timeapi.io/api/time/current/zone?timeZone=America%2FNew_York")
+        const data = await res.json()
+        const now = new Date(data.dateTime)
+        return now
+    }
+
+    function parseTime(milliseconds) {
+        let seconds = 0;
+        let minutes = 0;
+        let hours = 0;
+        let days = 0;
+        let weeks = 0;
+        let months = 0;
+        while (milliseconds > MS_IN_SECOND) {
+            if (milliseconds > MS_IN_MONTH) {
+                milliseconds -= MS_IN_MONTH
+                months++
+            } else if (milliseconds > MS_IN_WEEK) {
+                milliseconds -= MS_IN_WEEK
+                weeks++
+            } else if (milliseconds > MS_IN_DAY) {
+                milliseconds -= MS_IN_DAY
+                days++
+            } else if (milliseconds > MS_IN_HOUR) {
+                milliseconds -= MS_IN_HOUR
+                hours++
+            } else if (milliseconds > MS_IN_MINUTE) {
+                milliseconds -= MS_IN_MINUTE
+                minutes++
+            } else {
+                milliseconds -= MS_IN_SECOND
+                seconds++
+            }
+        }
+        return {
+            months: months,
+            weeks: weeks,
+            days: days,
+            hours: hours,
+            minutes: minutes,
+            seconds: seconds,
+            milliseconds: milliseconds
+        }
+    }
+
+    function updateDisplay(element, cd) {
+        element.innerHTML =
+            `<p style="width: 10rem;">
+                Months: ${cd.months}<br>
+            Weeks: ${cd.weeks}<br>
+            Days: ${cd.days}<br>
+                ${cd.hours}:${cd.minutes}:${cd.seconds}.${cd.milliseconds}</p>`
+    }
+
+    function countItDown(cd) {
+        cd.milliseconds -= 5;
+        if (cd.milliseconds < 0) {
+            cd.seconds--
+            cd.milliseconds = 995
+        }
+        if (cd.seconds < 0) {
+            cd.minutes--
+            cd.seconds = 59
+        }
+        if (cd.minutes < 0) {
+            cd.minutes = 59
+            cd.hours--
+        }
+        if (cd.hours < 0) {
+            cd.hours = 59
+            cd.days--
+        }
+
+        if (cd.days < 0) {
+            if (cd.weeks > 0) {
+                cd.weeks--
+                cd.days = 6
+            } else {
+                cd.days = 0
+            }
+        }
+
+        if (cd.weeks < 0) {
+            if (cd.months > 0) {
+                cd.months--
+                cd.weeks = 4
+            } else {
+                cd.weeks = 0
+            }
+        }
+    }
+
+    async function syncDifference(targetDate) {
+        let now = await getCurrentTime()
+        let difference = targetDate.valueOf() - now.valueOf()
+        countdown = parseTime(difference)
+        console.log("time synced")
+        return countdown;
+    }
+
+    async function main() {
+        const counter = document.getElementById("counter")
+        let targetDate = new Date("2025-07-25T00:00:00")
+        let countdown = await syncDifference(targetDate)
+        updateDisplay(counter, countdown)
+        let count = 0
+        while (true) {
+            countItDown(countdown)
+            updateDisplay(counter, countdown)
+            // Don't double sync on first run 
+            if (count == 5000) {
+                // Sync time to make sure js is in sync
+                countdown = await syncDifference(targetDate)
+                count = 0
+            }
+            count++
+            await new Promise(r => setTimeout(r, 5));
+        }
+    }
+    main()
+</script>
+
+</html>
