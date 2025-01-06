@@ -2,11 +2,11 @@ const cleanPercentage = (percentage) => {
     const isNegativeOrNaN = !Number.isFinite(+percentage) || percentage < 0; // we can set non-numbers to 0 here
     const isTooHigh = percentage > 100;
     return isNegativeOrNaN ? 0 : isTooHigh ? 100 : +percentage;
-}
+};
 
 function Circle({ color, percentage }) {
     const r = 40;
-    const circ = 2 * Math.PI * r
+    const circ = 2 * Math.PI * r;
     const strokePct = ((100 - percentage) * circ) / 100;
     return (
         <circle
@@ -18,8 +18,8 @@ function Circle({ color, percentage }) {
             strokeWidth={"0.75rem"}
             strokeDasharray={circ}
             strokeDashoffset={percentage ? strokePct : 0}
-        ></circle>
-    )
+        />
+    );
 }
 function Text({ color, text }) {
     return (
@@ -33,7 +33,7 @@ function Text({ color, text }) {
         >
             {text}
         </text>
-    )
+    );
 }
 
 function Pie({ color, text, percentage }) {
@@ -47,10 +47,8 @@ function Pie({ color, text, percentage }) {
             <Text color={color} text={text} />
         </svg>
     );
-};
+}
 
 export default function CircleProgress({ color, text, percentage }) {
-    return (
-        <Pie text={text} color={color} percentage={percentage} />
-    )
+    return <Pie text={text} color={color} percentage={percentage} />;
 }
