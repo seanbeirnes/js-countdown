@@ -21,17 +21,17 @@ function parseTime(milliseconds) {
     let hours = 0;
     let days = 0;
     let weeks = 0;
-    while (milliseconds > MS_IN_SECOND) {
-        if (milliseconds > MS_IN_WEEK) {
+    while (milliseconds >= MS_IN_SECOND) {
+        if (milliseconds >= MS_IN_WEEK) {
             milliseconds -= MS_IN_WEEK;
             weeks++;
-        } else if (milliseconds > MS_IN_DAY) {
+        } else if (milliseconds >= MS_IN_DAY) {
             milliseconds -= MS_IN_DAY;
             days++;
-        } else if (milliseconds > MS_IN_HOUR) {
+        } else if (milliseconds >= MS_IN_HOUR) {
             milliseconds -= MS_IN_HOUR;
             hours++;
-        } else if (milliseconds > MS_IN_MINUTE) {
+        } else if (milliseconds >= MS_IN_MINUTE) {
             milliseconds -= MS_IN_MINUTE;
             minutes++;
         } else {
