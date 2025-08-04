@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { motion } from "motion/react";
 import { BiCalendarWeek } from "react-icons/bi";
 import { BiCalendarEvent } from "react-icons/bi";
-import config from "../../config.json";
 import CircleProgress from "./CircleProgress";
 import getParsedTime from "../helpers/getParsedTime";
 
@@ -97,7 +96,6 @@ export default function Countdown({ targetDate, timeZone, title }) {
 	}, [timeDiff, seconds, minutes]);
 
 	return (
-		<div className="h-screen flex flex-col items-center justify-between p-8">
 			<main className="flex flex-col items-center">
 				<h1 className="text-gray-700 text-4xl text-center">{title}</h1>
 				<p>Countdown to {targetDateLocal.toLocaleString()}</p>
@@ -166,17 +164,27 @@ export default function Countdown({ targetDate, timeZone, title }) {
 						</motion.div>
 					</div>
 				</div>
-				<button
-					type="submit"
-					className="bg-blue-600 text-white m-6 px-4 py-2 rounded hover:bg-blue-700"
-					onClick={() => {
-						window.location.href = "/";
-					}}
-				>
-					New Countdown
-				</button>
+				<div className="flex flex-row items-center justify-center">
+					<button
+						type="submit"
+						className="bg-blue-600 text-white m-6 px-4 py-2 rounded hover:bg-blue-700"
+						onClick={() => {
+							window.location.href = "/";
+						}}
+					>
+						New Countdown
+					</button>
+					<button
+						type="submit"
+						className="bg-green-600 text-white m-6 px-4 py-2 rounded hover:bg-green-700"
+						onClick={() => {
+							navigator.clipboard.writeText(window.location.href);
+                            alert("Copied share link to clipboard!");
+						}}
+					>
+						Copy Share Link
+					</button>
+				</div>
 			</main>
-			<p>Created by {config.author}</p>
-		</div>
 	);
 }
